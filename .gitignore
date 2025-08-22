@@ -1,0 +1,28 @@
+# Java / Spring
+target/
+*.iml
+*.log
+*.class
+hs_err_pid*
+.idea/
+.gradle/
+build/
+
+# Node / React
+node_modules/
+dist/
+.vite/
+.next/
+
+# OS / Editor
+.DS_Store
+*.swp
+.vscode/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Misc
+coverage/
