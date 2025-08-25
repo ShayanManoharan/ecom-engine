@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>CORS Test - Frontend to Backend Communication</h1>
+    
+    <button onclick="testHealth()">Test Health Endpoint</button>
+    <button onclick="testActuator()">Test Actuator Endpoint</button>
+    
+    <div id="results"></div>
+
+    <script>
+        async function testHealth() {
+            const resultsDiv = document.getElementById('results');
+            try {
+                const response = await fetch('http://localhost:8080/api/health');
+                const data = await response.json();
+                
+                resultsDiv.innerHTML += `
+                    <div class="result success">
+                        <h3>✅ Health Endpoint Test - SUCCESS</h3>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        <h3>❌ Health Endpoint Test - FAILED</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testActuator() {
+            const resultsDiv = document.getElementById('results');
+            try {
+                const response = await fetch('http://localhost:8080/actuator/health');
+                const data = await response.json();
+                
+                resultsDiv.innerHTML += `
+                    <div class="result success">
+                        <h3>✅ Actuator Endpoint Test - SUCCESS</h3>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        <h3>❌ Actuator Endpoint Test - FAILED</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            testHealth();
+            setTimeout(testActuator, 1000);
+        };
+    </script>
+</body>
+</html>
+

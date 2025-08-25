@@ -1,13 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Engine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status-card {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .status-card.error {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        .button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #1976d2;
+        }
+        .endpoint-list {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .endpoint {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 3px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 E-Commerce Engine</h1>
+            <p>A simplified e-commerce platform</p>
+        </div>
+
+        <div class="status-card" id="statusCard">
+            <h3>System Status</h3>
+            <p id="statusText">Checking system status...</p>
+        </div>
+
+        <div>
+            <button class="button" onclick="checkHealth()">Check Health</button>
+            <button class="button" onclick="checkActuator()">Check Actuator</button>
+        </div>
+
+        <div class="endpoint-list">
+            <h3>Available Endpoints</h3>
+            <div class="endpoint">
+                <strong>Health Check:</strong> <code>GET /api/health</code>
+            </div>
+            <div class="endpoint">
+                <strong>Actuator Health:</strong> <code>GET /actuator/health</code>
+            </div>
+            <div class="endpoint">
+                <strong>H2 Database Console:</strong> <code>GET /h2-console</code>
+            </div>
+        </div>
+
+        <div id="responseArea" style="margin-top: 20px;">
+            <h3>API Response</h3>
+            <pre id="responseText" style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Check health on page load
+        window.onload = function() {
+            checkHealth();
+        };
+
+        async function checkHealth() {
+            try {
+                const response = await fetch('http://localhost:8080/api/health');
+                const data = await response.json();
+                
+                document.getElementById('statusText').innerHTML = 
+                    `<strong>Status:</strong> ${data.status}<br>
+                     <strong>Message:</strong> ${data.message}<br>
+                     <strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}`;
+                
+                document.getElementById('statusCard').className = 'status-card';
+                document.getElementById('responseText').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('statusText').innerHTML = 
+                    `<strong>Error:</strong> ${error.message}`;
+                document.getElementById('statusCard').className = 'status-card error';
+                document.getElementById('responseText').textContent = error.toString();
+            }
+        }
+
+        async function checkActuator() {
+            try {
+                const response = await fetch('http://localhost:8080/actuator/health');
+                const data = await response.json();
+                document.getElementById('responseText').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('responseText').textContent = error.toString();
+            }
+        }
+    </script>
+</body>
 </html>

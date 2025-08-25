@@ -8,6 +8,6 @@ export default {
     extend: {},
   },
   plugins: [
-    require('@tailwindcss/forms'),
+    // @tailwindcss/forms plugin is now included by default in v4
   ],
 }
